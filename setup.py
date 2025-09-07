@@ -39,7 +39,7 @@ setup(
         "ajpastor.operator",
         "ajpastor.lazy",
         "ajpastor.misc"],
-    install_requires = ['ore_algebra @ git+https://github.com/mkauers/ore_algebra.git','sphinx'],
+    install_requires = ['ore_algebra @ git+https://github.com/passagemath/passagemath-pkg-ore_algebra.git','sphinx'],
     extras_require={
         'passagemath': [
             'ore_algebra[passagemath]',
