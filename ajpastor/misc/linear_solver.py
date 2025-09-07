@@ -58,10 +58,10 @@ class LinearSystemSolver():
     '''
     def __init__(self, parent, matrix, inhomogeneous, is_zero=lambda p : False, relations=[]):
         ## Checking the input of matrix and vector
-        if(not SAGE_element.is_Matrix(matrix)):
+        if not isinstance(matrix, SAGE_element.Matrix):
             matrix = Matrix(matrix)
         
-        if(not SAGE_element.is_Vector(inhomogeneous)):
+        if not isinstance(inhomogeneous, SAGE_element.Vector):
             inhomogeneous = vector(inhomogeneous)
 
         if(isinstance(parent, Wrap_w_Sequence_Ring)):
@@ -302,9 +302,9 @@ class LinearSystemSolver():
             WARNING: repeated executions of this method may return different outputs since we may have
             found more relations.
         '''
-        if(SAGE_element.is_Matrix(obj)):
+        if isinstance(obj, SAGE_element.Matrix):
             return Matrix(obj.parent().base(), [[self.simplify(el) for el in row] for row in obj])
-        elif(SAGE_element.is_Vector(obj)):
+        elif isinstance(obj, SAGE_element.Vector):
             return vector(obj.parent().base(), [self.simplify(el) for el in obj])
         elif(isinstance(obj, list)):
             return [self.simplify(el) for el in obj]

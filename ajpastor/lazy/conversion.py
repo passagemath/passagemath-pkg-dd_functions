@@ -41,8 +41,8 @@ from sage.rings.polynomial.multi_polynomial_ring import is_MPolynomialRing as is
 from sage.rings.polynomial.infinite_polynomial_ring import InfinitePolynomialRing_dense as isDenseIPolynomial;                                                                 
 from sage.rings.polynomial.infinite_polynomial_ring import InfinitePolynomialRing_sparse as isSparseIPolynomial;
 
-from sage.structure.element import is_Matrix;
-from sage.structure.element import is_Vector;
+from sage.structure.element import Matrix;
+from sage.structure.element import Vector;
 
 class ConversionSystem(object):
     ## Main bulder
@@ -158,12 +158,12 @@ class ConversionSystem(object):
                 return self.poly_field()(n/d);
             except AttributeError:
                 return self.to_poly(element.parent().to_real(poly));
-        elif(is_Matrix(element)):
+        elif isinstance(element, Matrix):
             R = self.poly_ring();
             if(element.parent().base().is_field()):
                 R = self.poly_field();
             return Matrix(R, [self.to_poly(row) for row in element]);
-        elif(is_Vector(element)):
+        elif isinstance(element, Vector):
             R = self.poly_ring();
             if(element.parent().base().is_field()):
                 R = self.poly_field();
@@ -205,12 +205,12 @@ class ConversionSystem(object):
             n = self.to_real(poly.numerator());
             d = self.to_real(poly.denominator());
             return n/d;
-        elif(is_Matrix(poly)):
+        elif isinstance(poly, Matrix):
             R = self.base();
             if(poly.parent().base().is_field()):
                 R = R.fraction_field();
             return Matrix(R, [self.to_real(row) for row in poly]);
-        elif(is_Vector(poly)):
+        elif isinstance(poly, Vector):
             R = self.base();
             if(poly.parent().base().is_field()):
                 R = R.fraction_field();
@@ -234,9 +234,6 @@ class ConversionSystem(object):
                 - Matrices or vectors with polynomials rocignized by the Conversion system
                 - Elements in `self.base()`
         '''
-        from sage.structure.element import is_Matrix;
-        from sage.structure.element import is_Vector;
-        
         if(element in self.poly_ring()):
             element = self.poly_ring()(element);
             try: # Weird case: fraction field fall in polynomial field
@@ -259,12 +256,12 @@ class ConversionSystem(object):
             return set([self.simplify(el) for el in element]);
         elif(isinstance(element, tuple)):
             return tuple([self.simplify(el) for el in element]);
-        elif(is_Matrix(element)):
+        elif isinstance(element, Matrix):
             R = self.poly_ring();
             if(element.parent().base().is_field()):
                 R = self.poly_field();
             return Matrix(R, [[self.simplify(el) for el in row] for row in element]);
-        elif(is_Vector(element)):
+        elif isinstance(element, Vector):
             R = self.poly_ring();
             if(element.parent().base().is_field()):
                 R = self.poly_field();
