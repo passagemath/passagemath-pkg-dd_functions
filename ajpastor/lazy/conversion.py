@@ -36,13 +36,12 @@ except ImportError:
     from sage.all__sagemath_categories import *
 
 _sage_const_1 = Integer(1); _sage_const_0 = Integer(0)
-from sage.rings.polynomial.polynomial_ring import is_PolynomialRing as isUniPolynomial;
-from sage.rings.polynomial.multi_polynomial_ring import is_MPolynomialRing as isMPolynomial;
+from sage.rings.polynomial.polynomial_ring import PolynomialRing_generic
+from sage.rings.polynomial.multi_polynomial_ring import MPolynomialRing_base
 from sage.rings.polynomial.infinite_polynomial_ring import InfinitePolynomialRing_dense as isDenseIPolynomial;                                                                 
 from sage.rings.polynomial.infinite_polynomial_ring import InfinitePolynomialRing_sparse as isSparseIPolynomial;
 
-from sage.structure.element import Matrix;
-from sage.structure.element import Vector;
+from sage.structure.element import Matrix, Vector
 
 class ConversionSystem(object):
     ## Main bulder
@@ -72,8 +71,7 @@ class ConversionSystem(object):
         '''
             Returns a Boolean value that show if there are variables in this conversion system.
         '''
-        return (isUniPolynomial(self.poly_ring()) or 
-        isMPolynomial(self.poly_ring()) or 
+        return (isinstance(self.poly_ring(), (PolynomialRing_generic, MPolynomialRing_base)) or
         isinstance(self.poly_ring(),isDenseIPolynomial) or 
         isinstance(self.poly_ring(),isSparseIPolynomial));
         

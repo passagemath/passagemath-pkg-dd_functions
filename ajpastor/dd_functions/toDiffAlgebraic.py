@@ -49,8 +49,8 @@ from sage.symbolic.ring import SR
 
 from sage.graphs.digraph import DiGraph
 
-from sage.rings.polynomial.polynomial_ring import is_PolynomialRing
-from sage.rings.polynomial.multi_polynomial_ring import is_MPolynomialRing
+from sage.rings.polynomial.polynomial_ring import PolynomialRing_generic
+from sage.rings.polynomial.multi_polynomial_ring import MPolynomialRing_base
 from sage.rings.fraction_field import is_FractionField
 
 # ajpastor.dd_functions imports
@@ -237,7 +237,7 @@ def fromInfinityPolynomial_toFinitePolynomial(poly):
 
 def fromFinitePolynomial_toInfinitePolynomial(poly):
     parent = poly.parent()
-    if(is_InfinitePolynomialRing(poly) and (not is_MPolynomialRing(parent))):
+    if is_InfinitePolynomialRing(poly) and not isinstance(parent, MPolynomialRing_base):
         return poly
     
     
@@ -361,8 +361,8 @@ def __check_input(poly, debug=False):
     '''
     parent = poly.parent()
     if(not is_InfinitePolynomialRing(parent)):
-        if(not is_MPolynomialRing(parent)):
-            if(not is_PolynomialRing(parent)):
+        if not isinstance(parent, MPolynomialRing_base):
+            if not isinstance(parent, PolynomialRing_generic):
                 raise TypeError("__check_input: the input is not a valid polynomial. Obtained something in %s" %parent)
             if(not str(parent.gens()[0]).startswith("y_")):
                 raise TypeError("The input is not a valid polynomial. Obtained %s but wanted something with variables y_*" %poly)
@@ -749,8 +749,8 @@ def toDifferentiallyAlgebraic_Below(poly, infinite=False, debug=False):
     ### Preprocessing the input
     parent = poly.parent()
     if(not is_InfinitePolynomialRing(parent)):
-        if(not is_MPolynomialRing(parent)):
-            if(not is_PolynomialRing(parent)):
+        if not isinstance(parent, MPolynomialRing_base):
+            if not isinstance(parent, PolynomialRing_generic):
                 raise TypeError("The input is not a valid polynomial. Obtained something in %s" %parent)
             if(not str(parent.gens()[0]).startswith("y_")):
                 raise TypeError("The input is not a valid polynomial. Obtained %s but wanted something with variables y_*" %poly)
@@ -896,7 +896,7 @@ def diff_to_diffalg(func, varname="y", constant=True, infinite=True, debug=False
     if(is_DDRing(parent)):
         var = parent.variables(True)[0]
         F = parent.coeff_field
-    elif(is_PolynomialRing(parent) or is_MPolynomialRing(parent)):
+    elif isinstance(parent, (PolynomialRing_generic, MPolynomialRing_base)):
         ## In the case parent is a ring of polynomials, all variables except the first 
         ## are considered as parameters.
         var = parent.gens()[0]
@@ -979,7 +979,7 @@ def inverse_DA(poly, vars=None, infinite=False):
     if(is_InfinitePolynomialRing(parent)):
         poly = fromInfinityPolynomial_toFinitePolynomial(poly)
         return inverse_DA(poly, vars, infinite=infinite)
-    if(not (is_PolynomialRing(parent) or is_MPolynomialRing(parent))):
+    if not isinstance(parent, (PolynomialRing_generic, MPolynomialRing_base)):
         raise TypeError("No polynomial is given")
     poly = parent(poly)
     
@@ -1269,7 +1269,7 @@ def FaaDiBruno_polynomials(n, parent):
     if(n < 0):
         raise ValueError("No Faa Di Bruno polynomial can be computed for negative index")
     elif(not(is_InfinitePolynomialRing(parent))):
-        if((not(is_PolynomialRing(parent))) and (not(is_MPolynomialRing(parent)))):
+        if not isinstance(parent, (PolynomialRing_generic, MPolynomialRing_base)):
             raise TypeError("The parent ring is not valid: needed polynomial rings or InfinitePolynomialRing")
         return FaaDiBruno_polynomials(n, InfinitePolynomialRing(parent, "y"))
     

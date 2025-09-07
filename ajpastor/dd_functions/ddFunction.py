@@ -66,8 +66,8 @@ from sage.calculus.functional import derivative as diff
 from sage.functions.generalized import kronecker_delta
 from sage.rings.infinity import Infinity as infinity
 from sage.calculus.predefined import x
-from sage.rings.polynomial.polynomial_ring import is_PolynomialRing
-from sage.rings.polynomial.multi_polynomial_ring import is_MPolynomialRing
+from sage.rings.polynomial.polynomial_ring import PolynomialRing_generic
+from sage.rings.polynomial.multi_polynomial_ring import MPolynomialRing_base
 from sage.categories.morphism import Morphism
 from sage.categories.pushout import pushout
 from sage.categories.pushout import ConstructionFunctor
@@ -2497,7 +2497,7 @@ class DDFunction (IntegralDomainElement, SerializableObject):
         #################################################################################
         ## After creating the original operator, we check we can not extract an "x" factor
         coeff_gcd = 1 
-        if(is_PolynomialRing(self.parent().base())):
+        if isinstance(self.parent().base(), PolynomialRing_generic):
             l = []
             for el in self.equation.coefficients():
                 l += el.coefficients(x)
@@ -4692,7 +4692,7 @@ class DDFunction (IntegralDomainElement, SerializableObject):
                 
                 return dR.element([dR.base()(el) for el in coeffs], self.init(self.equation.jp_value()+1, True, True), name=self.name).to_simpler()
                         
-            elif(is_PolynomialRing(R)):
+            elif isinstance(R, PolynomialRing_generic):
                 degs = [self[i].degree() - i for i in range(self.order()+1)]
                 m = max(degs)
                 maxs = [i for i in range(len(degs)) if degs[i] == m]
@@ -5452,7 +5452,7 @@ def _is_polynomial_ring(ring, univariate=True, multivariate=True):
         with the optional arguments ''univariate'' and ''multivariate''. By default, the method
         checks for both types together.
     '''
-    return (univariate and is_PolynomialRing(ring)) or (multivariate and is_MPolynomialRing(ring))
+    return (univariate and isinstance(ring, PolynomialRing_generic)) or (multivariate and isinstance(ring, MPolynomialRing_base))
 
 def _is_polynomial(element, univariate=True, multivariate=True):
     r'''
@@ -5517,13 +5517,12 @@ def command(e):
     try:
         return e._to_command_()
     except AttributeError:
-        from sage.rings.polynomial import polynomial_ring as Uni_Polynomial
         from sage.rings.number_field.number_field import is_NumberField
         from sage.rings.fraction_field import is_FractionField
         if(e in _IntegralDomains):
             if(e is QQ):
                 return "QQ"
-            if(Uni_Polynomial.is_PolynomialRing(e)):
+            if isinstance(e, PolynomialRing_generic):
                 return "PolynomialRing(%s, %s)" %(command(e.base()), [str(var) for var in e.gens()])
             if(is_NumberField(e)):
                 poly = e.defining_polynomial(); gen = e.gen()
