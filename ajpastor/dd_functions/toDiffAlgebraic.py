@@ -1325,7 +1325,7 @@ def Exponential_polynomials(n, parent):
 
         EXAMPLES::
 
-            sage: from ajpastor.dd_functions include *
+            sage: from ajpastor.dd_functions import *
             sage: Exponential_polynomials(1,QQ)
             y_0
             sage: Exponential_polynomial(2, QQ)
